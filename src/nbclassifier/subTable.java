@@ -17,38 +17,47 @@ import java.util.Map;
 public class subTable {
 
     public double gettPosi() {
+        tPosi = tPos / sumPos;
         return tPosi;
     }
 
     public double getfPosi() {
+        fPosi = fPos / sumPos;
         return fPosi;
     }
 
     public double gettNega() {
+        tNega = tNeg / sumNeg;
         return tNega;
     }
 
     public double getfNega() {
+        fNega = fNeg / sumNeg;
         return fNega;
     }
 
     public double gettNeut() {
+        tNeut = tNeu / sumNeu;
         return tNeut;
     }
 
     public double getfNeut() {
+        fNeut = fNeu / sumNeu;
         return fNeut;
     }
 
     public double getSumPosi() {
+        sumPosi = sumPos / total;
         return sumPosi;
     }
 
     public double getSumNega() {
+        sumNega = sumNeg / total;
         return sumNega;
     }
 
     public double getSumNeut() {
+        sumNeut = sumNeu / total;
         return sumNeut;
     }
 
@@ -98,16 +107,6 @@ public class subTable {
                 System.out.println("Error, data invalid!!");
             }
         }
-        total = sumPos + sumNeg + sumNeu;
-        tPosi = tPos / sumPos;
-        fPosi = fPos / sumPos;
-        tNega = tNeg / sumNeg;
-        fNega = fNeg / sumNeg;
-        tNeut = tNeu / sumNeu;
-        fNeut = fNeu / sumNeu;
-        sumPosi = sumPos / total;
-        sumNega = sumNeg / total;
-        sumNeut = sumNeu / total;
-    }
-    
+        total = sumPos + sumNeg + sumNeu;        
+    }    
 }

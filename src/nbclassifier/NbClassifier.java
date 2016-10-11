@@ -8,6 +8,7 @@ package nbclassifier;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -30,10 +31,13 @@ public class NbClassifier {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
-        String fileName = "c:\\Users\\YH Jonathan Kwok\\OneDrive\\tweets\\tweets.txt";
+        String fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\tweets.txt";
+        FileReader fr = new FileReader(fileName);
+        BufferedReader br = new BufferedReader(fr);
+        /*
         FileInputStream fstream;
         fstream = new FileInputStream(fileName);
-        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));*/
         //lines collection
         ArrayList<String> list = new ArrayList<>();
         String line;
@@ -41,7 +45,8 @@ public class NbClassifier {
         Set<String> category = new HashSet<>();
         
         System.out.println("Processing. . . (Reading from file)");
-        while((line = br.readLine().toLowerCase()) != null) {
+        while((line = br.readLine()) != null) {
+            line = line.toLowerCase();
             //put lines into my collection from file
             list.add(line);
             //collect each words from the file to a map to form 
@@ -59,6 +64,7 @@ public class NbClassifier {
         System.out.println("Shuffling list");
         Collections.shuffle(list);
         System.out.println("List shuffled");
+        
         //split the list into testing set and training set
         //70% train, 30% testing
         System.out.println("Spliting list to training set (70%) and testing set (30%)");
@@ -82,20 +88,27 @@ public class NbClassifier {
         //my research told me that this 2d bool array will be filled with false by default.
         System.out.println("Creating main table");
         //categoryLst.size() + 1 to includes the class at the end
-        String mainTable[][] = new String [categoryList.size() + 1][train.size()];
+        String mainTable[][] = new String [train.size()][categoryList.size() + 1];
         for (i = 0; i < train.size(); i++) {
             String[] elements = train.get(i).split(" ");
-            for (int j = 0; j < categoryList.size(); j++){
-                mainTable[j][i] = "false";
+            int j;
+            for (j = 0; j < categoryList.size(); j++){
+                mainTable[i][j] = "false";
                 //disregard the first number and the class
                 for (int k = 2; k < elements.length; k++)
                     if(categoryList.get(j).equals(elements[k]))
-                        mainTable[j][i] = "true";
+                        mainTable[i][j] = "true";
             }
             //put the class(positive/negative/neutral) into the last slot of that row
-            mainTable[categoryList.size()][i] = elements[1];
+            mainTable[i][j] = elements[1];
         }
         System.out.println("Main table SHOULD BE created");
+        for (int try1 = 0; try1 < categoryList.size() + 1; try1++){
+            for (int try2 = 0; try2 < train.size(); try2++){
+                System.out.print(mainTable[try2][try1] + " ");
+            }
+            System.out.print("\n");
+        }
         
         //Now construct the small tables
         ArrayList<subTable> subTables = new ArrayList<>();
@@ -104,7 +117,7 @@ public class NbClassifier {
             Map tempMap = new HashMap();
             for (int k = 0; k < train.size(); k++){
                 //a map that contains the whole column of (t/f,class) e.g true,positive
-                tempMap.put(mainTable[j][k],mainTable[categoryList.size()][k]);
+                tempMap.put(mainTable[k][j],mainTable[k][categoryList.size()]);
             }
             subTable tempSubTable = new subTable(tempMap);
             subTables.add(tempSubTable);            
