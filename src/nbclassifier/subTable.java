@@ -18,47 +18,47 @@ import java.util.Map;
 public class subTable {
 
     public double gettPosi() {
-        tPosi = tPos / sumPos;
+        tPosi = ((double)tPos) / sumPos;
         return tPosi;
     }
 
     public double getfPosi() {
-        fPosi = fPos / sumPos;
+        fPosi = ((double)fPos) / sumPos;
         return fPosi;
     }
 
     public double gettNega() {
-        tNega = tNeg / sumNeg;
+        tNega = ((double)tNeg) / sumNeg;
         return tNega;
     }
 
     public double getfNega() {
-        fNega = fNeg / sumNeg;
+        fNega = ((double)fNeg) / sumNeg;
         return fNega;
     }
 
     public double gettNeut() {
-        tNeut = tNeu / sumNeu;
+        tNeut = ((double)tNeu) / sumNeu;
         return tNeut;
     }
 
     public double getfNeut() {
-        fNeut = fNeu / sumNeu;
+        fNeut = ((double)fNeu) / sumNeu;
         return fNeut;
     }
 
     public double getSumPosi() {
-        sumPosi = sumPos / total;
+        sumPosi = ((double)sumPos) / total;
         return sumPosi;
     }
 
     public double getSumNega() {
-        sumNega = sumNeg / total;
+        sumNega = ((double)sumNeg) / total;
         return sumNega;
     }
 
     public double getSumNeut() {
-        sumNeut = sumNeu / total;
+        sumNeut = ((double)sumNeu) / total;
         return sumNeut;
     }
 
@@ -114,7 +114,7 @@ public class subTable {
         }
         //System.out.println("End of Map");
         total = sumPos + sumNeg + sumNeu;
-        System.out.println(fakeMap.size() + " : " + sumPos + " + " + sumNeg + " + " + sumNeu + " = " + total);
-        System.out.println(tPos + " " + fPos + " " + tNeg + " " + fNeg + " " + tNeu + " " + fNeu);
+        //System.out.println(fakeMap.size() + " : " + sumPos + " + " + sumNeg + " + " + sumNeu + " = " + total);
+        //System.out.println(tPos + " " + fPos + " " + tNeg + " " + fNeg + " " + tNeu + " " + fNeu);
     }    
 }
