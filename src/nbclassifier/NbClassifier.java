@@ -103,23 +103,31 @@ public class NbClassifier {
             mainTable[i][j] = elements[1];
         }
         System.out.println("Main table SHOULD BE created");
-        for (int try1 = 0; try1 < categoryList.size() + 1; try1++){
-            for (int try2 = 0; try2 < train.size(); try2++){
+        
+        /*testing purpose
+        for (int try2 = 0; try2 < train.size(); try2++){
+            for (int try1 = 0; try1 < categoryList.size() + 1; try1++){
                 System.out.print(mainTable[try2][try1] + " ");
             }
             System.out.print("\n");
-        }
+        }*/
         
         //Now construct the small tables
         ArrayList<subTable> subTables = new ArrayList<>();
         System.out.println("Constructing small tables...");
         for (int j = 0; j < categoryList.size(); j++){
-            Map tempMap = new HashMap();
+            //Map tempMap = new HashMap();
+            ArrayList<String> fakeMap = new ArrayList<>();
             for (int k = 0; k < train.size(); k++){
                 //a map that contains the whole column of (t/f,class) e.g true,positive
-                tempMap.put(mainTable[k][j],mainTable[k][categoryList.size()]);
+                //System.out.println("j = " + j + "; k = " + k);
+                //System.out.println(mainTable[k][j] + " " + mainTable[k][categoryList.size()]);
+                String temp = mainTable[k][j] + " " + mainTable[k][categoryList.size()];
+                //tempMap.put(mainTable[k][j],mainTable[k][categoryList.size()]);
+                fakeMap.add(temp);
             }
-            subTable tempSubTable = new subTable(tempMap);
+            
+            subTable tempSubTable = new subTable(fakeMap);
             subTables.add(tempSubTable);            
         }
         System.out.println("Small tables SHOULD BE ready\n\n");
@@ -156,21 +164,30 @@ public class NbClassifier {
             }
             
             double posiTotal = subTables.get(0).getSumPosi();
+            //System.out.println(subTables.get(0).getSumPosi());
             double negaTotal = subTables.get(0).getSumNega();
+            //System.out.println(subTables.get(0).getSumNega());
             double neutTotal = subTables.get(0).getSumNeut();
+            //System.out.println(subTables.get(0).getSumNeut());
             
             for (int k = 0; k < subTables.size(); k++){
                 if (tempBool.get(k).equals("true")){
                     //get a number out from subTables.get(k)
                     posiTotal *= subTables.get(k).gettPosi();
+                    //System.out.println(subTables.get(k).gettPosi());
                     negaTotal *= subTables.get(k).gettNega();
+                    //System.out.println(subTables.get(k).gettNega());
                     neutTotal *= subTables.get(k).gettNeut();
+                    //System.out.println(subTables.get(k).gettNeut());
                 }                    
                 else if (tempBool.get(k).equals("false")){
                     //get a number out from subTables.get(k)
                     posiTotal *= subTables.get(k).getfPosi();
+                    //System.out.println(subTables.get(k).getfPosi());
                     negaTotal *= subTables.get(k).getfNega();
+                    //System.out.println(subTables.get(k).getfNega());
                     neutTotal *= subTables.get(k).getfNeut();
+                    //System.out.println(subTables.get(k).getfNeut());
                 }                    
                 else{
                     //you are in deep trouble if you could get here...
@@ -200,7 +217,8 @@ public class NbClassifier {
             }
             else
                 System.out.println("\t\tmissed");        
-        }
+            System.out.println(posiTotal + " " + negaTotal + " " + neutTotal);
+        }        
         System.out.println("Accuracy:\n" + mNum/test.size());        
     }    
 }

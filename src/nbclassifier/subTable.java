@@ -1,6 +1,7 @@
 package nbclassifier;
 
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /*
@@ -81,10 +82,13 @@ public class subTable {
     private double sumNega = 0.0;
     private double sumNeut = 0.0;
 
-    public subTable(Map tempMap) {
-        for (Object key : tempMap.keySet()) {
-            String value = key.toString(); //t/f
-            String nePoNe = (String) tempMap.get(key); //pos/neg/neu
+    public subTable(/*Map tempMap*/ArrayList<String> fakeMap) {
+        for (int i = 0; i < fakeMap.size(); i++) {
+            String temp = fakeMap.get(i);
+            String parts[] = temp.split(" ");
+            String value = parts[0]; //t/f
+            String nePoNe = parts[1]; //pos/neg/neu
+            //System.out.println(value + " " + nePoNe);
             if (value.equals("true") && nePoNe.equals("positive")) {
                 tPos++;
                 sumPos++;
@@ -105,8 +109,12 @@ public class subTable {
                 sumNeu++;
             } else {
                 System.out.println("Error, data invalid!!");
+                System.out.println(value + " & " + nePoNe);
             }
         }
-        total = sumPos + sumNeg + sumNeu;        
+        //System.out.println("End of Map");
+        total = sumPos + sumNeg + sumNeu;
+        System.out.println(fakeMap.size() + " : " + sumPos + " + " + sumNeg + " + " + sumNeu + " = " + total);
+        System.out.println(tPos + " " + fPos + " " + tNeg + " " + fNeg + " " + tNeu + " " + fNeu);
     }    
 }
