@@ -19,31 +19,37 @@ public class subTable {
 
     public double gettPosi() {
         tPosi = ((double)tPos) / sumPos;
+        if (tPosi == 0.0) tPosi = 1.0;
         return tPosi;
     }
 
     public double getfPosi() {
         fPosi = ((double)fPos) / sumPos;
+        if (fPosi == 0.0) fPosi = 1.0;
         return fPosi;
     }
 
     public double gettNega() {
         tNega = ((double)tNeg) / sumNeg;
+        if (tNega == 0.0) tNega = 1.0;
         return tNega;
     }
 
     public double getfNega() {
         fNega = ((double)fNeg) / sumNeg;
+        if (fNega == 0.0) fNega = 1.0;
         return fNega;
     }
 
     public double gettNeut() {
         tNeut = ((double)tNeu) / sumNeu;
+        if (tNeut == 0.0) tNeut = 1.0;
         return tNeut;
     }
 
     public double getfNeut() {
         fNeut = ((double)fNeu) / sumNeu;
+        if (fNeut == 0.0) fNeut = 1.0;
         return fNeut;
     }
 

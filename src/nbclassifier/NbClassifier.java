@@ -136,19 +136,18 @@ public class NbClassifier {
         int mNum = 0;
         System.out.println("Let's begin the test\n");
         for (int j = 0; j < test.size(); j++){
-            System.out.println("Sentence:");
+            System.out.print("\nSentence:");
             String tempLine = test.get(j);
             String[] elements = tempLine.split(" ");
-            System.out.print("\t\t");
+            System.out.print("\t");
             for (int k = 2; k < elements.length; k++){
                 System.out.print(elements[k] + " ");
             }
-            System.out.println();
-            System.out.println("\nTarget:");
+            System.out.print("\nTarget:");
             String target = elements[1];
             System.out.println("\t\t" + target);
             
-            System.out.println("Prediction:");
+            System.out.print("Prediction:");
             ArrayList<String> tempBool = new ArrayList<>();
             for (int l = 0; l < categoryList.size(); l++){
                 boolean found = false;
@@ -173,26 +172,26 @@ public class NbClassifier {
             for (int k = 0; k < subTables.size(); k++){
                 if (tempBool.get(k).equals("true")){
                     //get a number out from subTables.get(k)
-                    if(subTables.get(k).gettPosi() == 0.0) System.out.println("0.0 ignored!!!");
-                    else posiTotal *= subTables.get(k).gettPosi();
+                    /*if(subTables.get(k).gettPosi() == 0.0) System.out.println("0.0 ignored!!!");
+                    else*/ posiTotal *= subTables.get(k).gettPosi();
                     //System.out.println(subTables.get(k).gettPosi());
-                    if(subTables.get(k).gettNega() == 0.0) System.out.println("0.0 ignored!!!");
-                    else negaTotal *= subTables.get(k).gettNega();
+                    /*if(subTables.get(k).gettNega() == 0.0) System.out.println("0.0 ignored!!!");
+                    else*/ negaTotal *= subTables.get(k).gettNega();
                     //System.out.println(subTables.get(k).gettNega());
-                    if(subTables.get(k).gettNeut() == 0.0) System.out.println("0.0 ignored!!!");
-                    else neutTotal *= subTables.get(k).gettNeut();
+                    /*if(subTables.get(k).gettNeut() == 0.0) System.out.println("0.0 ignored!!!");
+                    else*/ neutTotal *= subTables.get(k).gettNeut();
                     //System.out.println(subTables.get(k).gettNeut());
                 }                    
                 else if (tempBool.get(k).equals("false")){
                     //get a number out from subTables.get(k)
-                    if(subTables.get(k).getfPosi() == 0.0) System.out.println("0.0 ignored!!!");
-                    else posiTotal *= subTables.get(k).getfPosi();
+                    /*if(subTables.get(k).getfPosi() == 0.0) System.out.println("0.0 ignored!!!");
+                    else*/ posiTotal *= subTables.get(k).getfPosi();
                     //System.out.println(subTables.get(k).getfPosi());
-                    if(subTables.get(k).getfNega() == 0.0) System.out.println("0.0 ignored!!!");
-                    else negaTotal *= subTables.get(k).getfNega();
+                    /*if(subTables.get(k).getfNega() == 0.0) System.out.println("0.0 ignored!!!");
+                    else*/ negaTotal *= subTables.get(k).getfNega();
                     //System.out.println(subTables.get(k).getfNega());
-                    if(subTables.get(k).getfNeut() == 0.0) System.out.println("0.0 ignored!!!");
-                    else neutTotal *= subTables.get(k).getfNeut();
+                    /*if(subTables.get(k).getfNeut() == 0.0) System.out.println("0.0 ignored!!!");
+                    else*/ neutTotal *= subTables.get(k).getfNeut();
                     //System.out.println(subTables.get(k).getfNeut());
                 }                    
                 else{
@@ -211,9 +210,9 @@ public class NbClassifier {
                 predict = "neutral";
             else
                 predict = "undefined";
-            System.out.println(predict);
+            System.out.println("\t" + predict);
             
-            System.out.println("Result:");
+            System.out.print("Result:");
             if (target.equals(predict))
                 match = true;
             
@@ -223,8 +222,8 @@ public class NbClassifier {
             }
             else
                 System.out.println("\t\tmissed");        
-            System.out.println(posiTotal + " " + negaTotal + " " + neutTotal);
+            //System.out.println(posiTotal + " " + negaTotal + " " + neutTotal);
         }        
-        System.out.println("Accuracy:\n" + (((double)mNum)/test.size()*100) + "%");        
+        System.out.println("\n\nAccuracy:\t" + (((double)mNum)/test.size()*100) + "%");        
     }    
 }
