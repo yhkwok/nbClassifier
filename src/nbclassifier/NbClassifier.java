@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -29,6 +30,36 @@ public class NbClassifier {
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
      */
+    
+    //source: (http://stackoverflow.com/questions/4429995/how-do-you-remove-repeated-characters-in-a-string)
+    public static String removeRepeatedChars(String input, int maxRepeat)
+    {
+        if(input.length() == 0)return input;
+        
+        char[] chars = input.toCharArray();
+        String b = "";
+        b += chars[0];// = new StringBuilder;
+        char lastChar = chars[0];
+        int repeat = 0;
+        for(int i=1;i<input.length();i++){
+            //repeated less then twice
+            if(chars[i] == lastChar && ++repeat < maxRepeat) {
+                b += chars[i];
+            }
+            //repeated too many times
+            else if(chars[i] == lastChar && ++repeat >= maxRepeat) {
+                
+            }
+            //not repeated
+            else {
+                b += chars[i];
+                repeat=0;
+                lastChar = chars[i];
+            }
+        }
+        return b;
+    }
+    
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
         String fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\tweets.txt";
@@ -43,19 +74,76 @@ public class NbClassifier {
         String line;
         //category collection (make it a set to prevent duplication)
         Set<String> category = new HashSet<>();
-        
+        int positiveCount = 0;
+        int negativeCount = 0;
         System.out.println("Processing. . . (Reading from file)");
         while((line = br.readLine()) != null) {
             line = line.toLowerCase();
-            //put lines into my collection from file
-            list.add(line);
             //collect each words from the file to a map to form 
             //the category list of the big table - no duplicated
-            String[] temp = line.split(" ");
-            for (int i = 2; i < temp.length; i++){
-                category.add(temp[i]);
+            String delim1 = " ";
+            String delim2 = ",";
+            line = line.replaceAll(delim2, delim1);
+            String[] temp = line.split(delim1);
+            if(!(temp[1].equals("neutral"))){
+                if(temp[1].equals("positive"))
+                    positiveCount++;
+                else if (temp[1].equals("negative"))
+                    negativeCount++;
+                
+                for (int i = 2; i < temp.length; i++){
+                    //Improve the dictionary by shorten those words with too many repeated characters
+                    //and remove those useless space
+                    //System.out.println("Before: " + temp[i]);
+                    temp[i] = removeRepeatedChars(temp[i], 2);
+                    //System.out.println("After: " + temp[i]);
+                    if (!temp[i].equals(" ")){
+                        temp[i] = temp[i].replaceAll("[^0-9a-z]", "");
+                        category.add(temp[i]);
+                    }
+                }
+                //put lines into my collection from file
+                line = removeRepeatedChars(line, 2);
+                line = line.replaceAll("[^0-9a-z ]", "");
+                list.add(line);            
             }
         }
+        System.out.println("After first file: P: " + positiveCount + " N: " + negativeCount);
+        
+        //new dataset found (http://thinknook.com/twitter-sentiment-analysis-training-corpus-dataset-2012-09-22/)
+        fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\SentimentAnalysisDataset.txt";
+        fr = new FileReader(fileName);
+        br = new BufferedReader(fr);
+        int lineCounter = 0;
+        while((line = br.readLine()) != null && lineCounter < 15000){
+            line = line.toLowerCase();
+                       
+            String delim1 = " ";
+            String delim2 = ",";
+            line = line.replaceAll(delim2, delim1);
+            String[] temp = line.split(delim1);
+            if(temp[1].equals("1"))
+                    positiveCount++;
+                else if (temp[1].equals("0"))
+                    negativeCount++;
+            for (int i = 2; i < temp.length; i++){
+                //Improve the dictionary by shorten those words with too many repeated characters
+                //and remove those useless space
+                //System.out.println("Before: " + temp[i]);
+                temp[i] = removeRepeatedChars(temp[i], 2);
+                //System.out.println("After: " + temp[i]);
+                if (!temp[i].equals(" ")){
+                    temp[i] = temp[i].replaceAll("[^0-9a-z]", "");
+                    category.add(temp[i]);
+                }
+            }
+            line = removeRepeatedChars(line, 2);
+            line = line.replaceAll("[^0-9a-z ]", "");
+            list.add(line);
+            lineCounter++;
+        }
+        System.out.println("After second file: P: " + positiveCount + " N: " + negativeCount);
+        
         System.out.println("Tweets added to list and category set created");
         //Now, category has all the words without duplicated,
         //and list has all the lines collected.
@@ -80,6 +168,12 @@ public class NbClassifier {
         //For functioning purpose, convert the set to an arraylist
         ArrayList<String> categoryList = new ArrayList<>();
         categoryList.addAll(category);
+        Collections.sort(categoryList);
+        FileWriter writer = new FileWriter("output.txt"); 
+        for(String str: categoryList) {
+            writer.write(str + "\n");
+        }
+        writer.close();
         
         //The next task is to create the main table. 
         //x axes = category(all the words) + class, y axes = each tweets
@@ -90,7 +184,11 @@ public class NbClassifier {
         //categoryLst.size() + 1 to includes the class at the end
         String mainTable[][] = new String [train.size()][categoryList.size() + 1];
         for (i = 0; i < train.size(); i++) {
-            String[] elements = train.get(i).split(" ");
+            String delim1 = " ";
+            String delim2 = ",";
+            String temp = train.get(i);
+            temp = temp.replaceAll(delim2, delim1);
+            String[] elements = temp.split(delim1);
             int j;
             for (j = 0; j < categoryList.size(); j++){
                 mainTable[i][j] = "false";
@@ -100,11 +198,27 @@ public class NbClassifier {
                         mainTable[i][j] = "true";
             }
             //put the class(positive/negative/neutral) into the last slot of that row
-            mainTable[i][j] = elements[1];
+            /*if (elements[1].equals("positive") || elements[1].equals("negative"))
+                mainTable[i][j] = elements[1];
+            else{*/
+                if (elements[1].equals("1") || elements[1].equals("positive")){
+                    String temp1 = "positive";
+                    mainTable[i][j] = temp1;
+                    //System.out.println(mainTable[i][j]);
+                }                    
+                else if (elements[1].equals("0") || elements[1].equals("negative")){
+                    String temp1 = "negative";
+                    mainTable[i][j] = temp1;
+                    //System.out.println(mainTable[i][j]);
+                }
+                else if (elements[1].equals("neutral"))
+                    mainTable[i][j] = elements[1];
+            //}
+                
         }
         System.out.println("Main table SHOULD BE created");
         
-        /*testing purpose
+        /*//testing purpose
         for (int try2 = 0; try2 < train.size(); try2++){
             for (int try1 = 0; try1 < categoryList.size() + 1; try1++){
                 System.out.print(mainTable[try2][try1] + " ");
@@ -135,19 +249,38 @@ public class NbClassifier {
         //match counter
         int mNum = 0;
         System.out.println("Let's begin the test\n");
+        int posiMiss = 0;
+        int negaMiss = 0;
         for (int j = 0; j < test.size(); j++){
-            System.out.print("\nSentence:");
+            //System.out.print("\nSentence:");
             String tempLine = test.get(j);
-            String[] elements = tempLine.split(" ");
-            System.out.print("\t");
+            String delim1 = " ";
+            String delim2 = ",";
+            tempLine = tempLine.replaceAll(delim2, delim1);
+            String[] elements = tempLine.split(delim1);
+            //System.out.print("\t");
             for (int k = 2; k < elements.length; k++){
-                System.out.print(elements[k] + " ");
+                //System.out.print(elements[k] + " ");
             }
-            System.out.print("\nTarget:");
+            //System.out.print("\nTarget:");
             String target = elements[1];
-            System.out.println("\t\t" + target);
+            /*if (elements[1].equals("positive") || elements[1].equals("negative"))
+                target = elements[1];
+            else{*/
+                if (elements[1].equals("1") || elements[1].equals("positive")){
+                    String temp1 = "positive";
+                    target = temp1;
+                }                    
+                else if (elements[1].equals("0") || elements[1].equals("negative")){
+                    String temp1 = "negative";
+                    target = temp1;
+                }
+                else if (elements[1].equals("neutral"))
+                    target = elements[1];
+            //}            
+            //System.out.println("\t\t" + target);
             
-            System.out.print("Prediction:");
+            //System.out.print("Prediction:");
             ArrayList<String> tempBool = new ArrayList<>();
             for (int l = 0; l < categoryList.size(); l++){
                 boolean found = false;
@@ -202,28 +335,36 @@ public class NbClassifier {
             }
             boolean match = false;
             String predict;
-            if ((posiTotal > negaTotal) && (posiTotal > neutTotal))
+            //posiTotal *= 10;
+            //negaTotal /= 10;
+            if ((posiTotal > negaTotal))// && (posiTotal > neutTotal))
                 predict = "positive";                
-            else if ((negaTotal > posiTotal) && (negaTotal > neutTotal))
+            else if ((negaTotal > posiTotal))// && (negaTotal > neutTotal))
                 predict = "negative";
-            else if ((neutTotal > posiTotal) && (neutTotal > negaTotal))
-                predict = "neutral";
+            /*else if ((neutTotal > posiTotal) && (neutTotal > negaTotal))
+                predict = "neutral";*/
             else
                 predict = "undefined";
-            System.out.println("\t" + predict);
+            //System.out.println("\t" + predict);
             
-            System.out.print("Result:");
+            //System.out.print("Result:");
             if (target.equals(predict))
                 match = true;
             
             if (match){
-                System.out.println("\t\tmatch");
+                //System.out.println("\t\tmatch");
                 mNum++;
             }
-            else
-                System.out.println("\t\tmissed");        
-            //System.out.println(posiTotal + " " + negaTotal + " " + neutTotal);
+            else{
+                //System.out.println("\t\tmissed " + target + " " + predict);        
+                //System.out.println(posiTotal + " " + negaTotal);// + " " + neutTotal);
+                if (posiTotal > negaTotal)
+                    posiMiss++;
+                else
+                    negaMiss++;
+            }
         }        
         System.out.println("\n\nAccuracy:\t" + (((double)mNum)/test.size()*100) + "%");        
+        System.out.println("Wrong guesses results - Positive: " + posiMiss + " Negative: " + negaMiss);
     }    
 }

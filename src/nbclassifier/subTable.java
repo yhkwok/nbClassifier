@@ -18,26 +18,26 @@ import java.util.Map;
 public class subTable {
 
     public double gettPosi() {
-        tPosi = ((double)tPos) / sumPos;
-        if (tPosi == 0.0) tPosi = 1.0;
+        tPosi = ((double)tPos) / sumPos *0.9;
+        if (tPosi == 0.0 || tPosi < 0.0001 || tPosi > 0.1) tPosi = 1.0;
         return tPosi;
     }
 
     public double getfPosi() {
-        fPosi = ((double)fPos) / sumPos;
-        if (fPosi == 0.0) fPosi = 1.0;
+        fPosi = ((double)fPos) / sumPos *0.9;
+        if (fPosi == 0.0 || fPosi < 0.0001 || fPosi > 0.1) fPosi = 1.0;
         return fPosi;
     }
 
     public double gettNega() {
         tNega = ((double)tNeg) / sumNeg;
-        if (tNega == 0.0) tNega = 1.0;
+        if (tNega == 0.0 || tNega < 0.0001 || tNega > 0.1) tNega = 1.0;
         return tNega;
     }
 
     public double getfNega() {
         fNega = ((double)fNeg) / sumNeg;
-        if (fNega == 0.0) fNega = 1.0;
+        if (fNega == 0.0 || fNega < 0.0001 || fNega > 0.1) fNega = 1.0;
         return fNega;
     }
 
