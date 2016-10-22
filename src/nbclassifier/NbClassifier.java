@@ -62,7 +62,7 @@ public class NbClassifier {
     
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
-        String fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\tweets.txt";
+        String fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\tweets.txt"; //testTrainTweets.txt"; //
         FileReader fr = new FileReader(fileName);
         BufferedReader br = new BufferedReader(fr);
         /*
@@ -74,76 +74,31 @@ public class NbClassifier {
         String line;
         //category collection (make it a set to prevent duplication)
         Set<String> category = new HashSet<>();
-        int positiveCount = 0;
-        int negativeCount = 0;
+        //int positiveCount = 0;
+        //int negativeCount = 0;
         System.out.println("Processing. . . (Reading from file)");
         while((line = br.readLine()) != null) {
             line = line.toLowerCase();
-            //collect each words from the file to a map to form 
-            //the category list of the big table - no duplicated
-            String delim1 = " ";
-            String delim2 = ",";
-            line = line.replaceAll(delim2, delim1);
-            String[] temp = line.split(delim1);
-            if(!(temp[1].equals("neutral"))){
-                if(temp[1].equals("positive"))
-                    positiveCount++;
-                else if (temp[1].equals("negative"))
-                    negativeCount++;
-                
-                for (int i = 2; i < temp.length; i++){
-                    //Improve the dictionary by shorten those words with too many repeated characters
-                    //and remove those useless space
-                    //System.out.println("Before: " + temp[i]);
-                    temp[i] = removeRepeatedChars(temp[i], 2);
-                    //System.out.println("After: " + temp[i]);
-                    if (!temp[i].equals(" ")){
-                        temp[i] = temp[i].replaceAll("[^0-9a-z]", "");
-                        category.add(temp[i]);
-                    }
-                }
-                //put lines into my collection from file
-                line = removeRepeatedChars(line, 2);
-                line = line.replaceAll("[^0-9a-z ]", "");
-                list.add(line);            
-            }
+            //put lines into my collection from file
+            line = removeRepeatedChars(line, 2);
+            line = line.replaceAll("[^0-9a-z ]", " ");
+            list.add(line);                        
         }
-        System.out.println("After first file: P: " + positiveCount + " N: " + negativeCount);
         
         //new dataset found (http://thinknook.com/twitter-sentiment-analysis-training-corpus-dataset-2012-09-22/)
-        fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\SentimentAnalysisDataset.txt";
+        //idea of making new testing easy tweets (http://www.laurentluce.com/posts/twitter-sentiment-analysis-using-python-and-nltk/)
+        fileName = "C:\\Users\\YH Jonathan Kwok\\PycharmProjects\\tweepyPractice\\SentimentAnalysisDataset.txt"; //testTestTweets.txt"; //
         fr = new FileReader(fileName);
         br = new BufferedReader(fr);
         int lineCounter = 0;
-        while((line = br.readLine()) != null && lineCounter < 15000){
+        while((line = br.readLine()) != null && lineCounter < 35000){
             line = line.toLowerCase();
-                       
-            String delim1 = " ";
-            String delim2 = ",";
-            line = line.replaceAll(delim2, delim1);
-            String[] temp = line.split(delim1);
-            if(temp[1].equals("1"))
-                    positiveCount++;
-                else if (temp[1].equals("0"))
-                    negativeCount++;
-            for (int i = 2; i < temp.length; i++){
-                //Improve the dictionary by shorten those words with too many repeated characters
-                //and remove those useless space
-                //System.out.println("Before: " + temp[i]);
-                temp[i] = removeRepeatedChars(temp[i], 2);
-                //System.out.println("After: " + temp[i]);
-                if (!temp[i].equals(" ")){
-                    temp[i] = temp[i].replaceAll("[^0-9a-z]", "");
-                    category.add(temp[i]);
-                }
-            }
             line = removeRepeatedChars(line, 2);
-            line = line.replaceAll("[^0-9a-z ]", "");
+            line = line.replaceAll("[^0-9a-z ]", " ");
             list.add(line);
             lineCounter++;
         }
-        System.out.println("After second file: P: " + positiveCount + " N: " + negativeCount);
-        
+              
         System.out.println("Tweets added to list and category set created");
         //Now, category has all the words without duplicated,
         //and list has all the lines collected.
@@ -165,10 +120,26 @@ public class NbClassifier {
             test.add(list.get(i));
         System.out.println("List splited");
         
+        for (int k = 0; k < train.size(); k++){
+            String[] temp = train.get(k).split(" ");
+            for (int j = 2; j < temp.length; j++){
+                //Improve the dictionary by shorten those words with too many repeated characters
+                //and remove those useless space
+                //System.out.println("Before: " + temp[i]);
+                temp[j] = removeRepeatedChars(temp[j], 2);
+                //System.out.println("After: " + temp[i]);
+                if (!temp[j].equals(" ")){
+                    temp[j] = temp[j].replaceAll("[^0-9a-z]", "");
+                    category.add(temp[j]);
+                }
+            }
+        }
+               
         //For functioning purpose, convert the set to an arraylist
         ArrayList<String> categoryList = new ArrayList<>();
         categoryList.addAll(category);
         Collections.sort(categoryList);
+        //testing purpose, output the dictionary words to a file
         FileWriter writer = new FileWriter("output.txt"); 
         for(String str: categoryList) {
             writer.write(str + "\n");
@@ -218,7 +189,7 @@ public class NbClassifier {
         }
         System.out.println("Main table SHOULD BE created");
         
-        /*//testing purpose
+        /*//testing purpose - to see how the mainTable looks like
         for (int try2 = 0; try2 < train.size(); try2++){
             for (int try1 = 0; try1 < categoryList.size() + 1; try1++){
                 System.out.print(mainTable[try2][try1] + " ");
@@ -336,7 +307,7 @@ public class NbClassifier {
             boolean match = false;
             String predict;
             //posiTotal *= 10;
-            //negaTotal /= 10;
+            //negaTotal *= 10;
             if ((posiTotal > negaTotal))// && (posiTotal > neutTotal))
                 predict = "positive";                
             else if ((negaTotal > posiTotal))// && (negaTotal > neutTotal))
@@ -363,6 +334,7 @@ public class NbClassifier {
                 else
                     negaMiss++;
             }
+            System.out.println(posiTotal + " " + negaTotal);// + " " + neutTotal);
         }        
         System.out.println("\n\nAccuracy:\t" + (((double)mNum)/test.size()*100) + "%");        
         System.out.println("Wrong guesses results - Positive: " + posiMiss + " Negative: " + negaMiss);
