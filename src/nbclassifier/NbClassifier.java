@@ -91,7 +91,7 @@ public class NbClassifier {
         fr = new FileReader(fileName);
         br = new BufferedReader(fr);
         int lineCounter = 0;
-        while((line = br.readLine()) != null && lineCounter < 45000){
+        while((line = br.readLine()) != null && lineCounter < 50000){
             line = line.toLowerCase();
             line = removeRepeatedChars(line, 2);
             line = line.replaceAll("[^0-9a-z ]", " ");
